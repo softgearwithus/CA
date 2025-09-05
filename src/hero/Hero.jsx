@@ -48,7 +48,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          pycs<span className="text-red-500">O</span>nline
+          Mycs<span className="text-red-500">O</span>nline
         </motion.h1>
 
         <motion.p
