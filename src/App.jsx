@@ -7,7 +7,7 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import DownloadSection from "./pages/DownloadSection";
 import BlogList from "./pages/BlogList";
-import BlogDetails from "./pages/Blogdetails";
+import BlogDetails from "./pages/BlogDetails";
 
 export default function App() {
   return (
