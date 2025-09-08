@@ -7,6 +7,8 @@ import About from "./pages/About";
 import DownloadSection from "./pages/DownloadSection";
 import BlogList from "./pages/BlogList";
 import BlogDetails from "./pages/BlogDetails";
+import AdminApp from "./admin/Adminpage";
+import Consultations from "./admin/Consultations";
 
 export default function App() {
   return (
@@ -20,6 +22,9 @@ export default function App() {
           <Route path="/downloads" element={<DownloadSection />} />
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
+          {/* admin */}
+          <Route path="/admin" element={<AdminApp/>} />
+          <Route path="/admin/consultations" element={<Consultations/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
