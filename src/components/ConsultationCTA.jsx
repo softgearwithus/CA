@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
+import axios from "axios";
 
 export default function ConsultationCTA() {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -12,16 +14,56 @@ export default function ConsultationCTA() {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    setShowModal(false);
-    setFormData({ name: "", email: "", phone: "", message: "" });
-    alert("Your consultation request has been submitted!");
-  };
+  // ✅ Backend submit
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("🚀 handleSubmit triggered"); // Step 1: confirm submit event works
+  setLoading(true);
+
+  try {
+    console.log("📤 Sending form data:", formData);
+
+    const res = await axios.post(
+      "http://localhost:5000/api/consultations", // ✅ NO double slash
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true, // ✅ useful if backend uses cookies
+      }
+    );
+
+    console.log("✅ Server Response:", res.data);
+
+    if (res.data.success) {
+      alert("Your consultation request has been submitted!");
+      setShowModal(false);
+      setFormData({ name: "", email: "", phone: "", message: "" });
+    } else {
+      alert("❌ Submission failed. Please try again.");
+    }
+  } catch (error) {
+    console.error("❌ Axios Error:", error);
+    if (error.response) {
+      console.error("🔴 Response Error:", error.response.data);
+    } else if (error.request) {
+      console.error("🟠 No response received:", error.request);
+    } else {
+      console.error("⚠️ Setup error:", error.message);
+    }
+    alert("Failed to submit consultation. Check console for details.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <section className="w-full">
@@ -44,9 +86,10 @@ export default function ConsultationCTA() {
         </p>
 
         <p className="text-white/90 text-base md:text-lg mb-6 max-w-2xl mx-auto">
-          Get expert advice from <span className="font-semibold">CS Sandeep Rajbhar</span> 
-          on how to legally structure, scale, and stay compliant. 
-          No hidden fees — just clarity.
+          Get expert advice from{" "}
+          <span className="font-semibold">CS Sandeep Rajbhar</span> on how to
+          legally structure, scale, and stay compliant. No hidden fees — just
+          clarity.
         </p>
 
         {/* Schedule Button */}
@@ -118,9 +161,14 @@ export default function ConsultationCTA() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                  disabled={loading}
+                  className={`px-4 py-2 rounded-xl text-white ${
+                    loading
+                      ? "bg-blue-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
                 >
-                  Submit
+                  {loading ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </form>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 import FloatingCTA from "../components/FloatingCTA";
 import BottomNavbar from "../components/BottomNavbar";
 
@@ -12,17 +13,54 @@ export default function Hero() {
     message: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // TODO: send formData to backend or API
-    setShowModal(false);
-    setFormData({ name: "", email: "", phone: "", message: "" });
-    alert("Your booking request has been submitted!");
+    console.log("🚀 Form submitted with data:", formData);
+
+    setLoading(true);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/consultations", // ✅ Your backend URL
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // if backend uses cookies
+        }
+      );
+
+      console.log("✅ Server Response:", res.data);
+
+      if (res.data.success) {
+        alert("Your consultation request has been submitted!");
+        setShowModal(false);
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        alert("❌ Submission failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("❌ Axios Error:", error);
+      if (error.response) {
+        console.error("🔴 Response Error:", error.response.data);
+        alert(`Server Error: ${error.response.data.message || "Unknown error"}`);
+      } else if (error.request) {
+        console.error("🟠 No response received:", error.request);
+        alert("No response from server. Is backend running?");
+      } else {
+        console.error("⚠️ Setup Error:", error.message);
+        alert("Something went wrong. Check console logs.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -141,8 +179,9 @@ export default function Hero() {
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                  disabled={loading}
                 >
-                  Submit
+                  {loading ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </form>
