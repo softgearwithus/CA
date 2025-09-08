@@ -9,6 +9,7 @@ import BlogList from "./pages/BlogList";
 import BlogDetails from "./pages/BlogDetails";
 import AdminApp from "./admin/Adminpage";
 import Consultations from "./admin/Consultations";
+import Dashboard from "./admin/Dashboard";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           {/* admin */}
           <Route path="/admin" element={<AdminApp/>} />
           <Route path="/admin/consultations" element={<Consultations/>}/>
+          <Route path="/admin/dashboard" element={<Dashboard/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

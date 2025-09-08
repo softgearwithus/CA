@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function AdminApp() {
-  const [showAuthModal, setShowAuthModal] = useState(true); // Show popup first
+  const [showAuthModal, setShowAuthModal] = useState(true); 
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [totalConsultations, setTotalConsultations] = useState(0);
+
+
+  useEffect(() => {
+    if (!showAuthModal) {
+      axios
+        .get("http://localhost:5000/api/admin/count")
+        .then((res) => setTotalConsultations(res.data.total))
+        .catch(() => console.log("Error fetching total consultations"));
+    }
+  }, [showAuthModal]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -29,7 +40,7 @@ export default function AdminApp() {
       <aside className="w-48 bg-gray-800 text-white p-4">
         <h2 className="text-xl font-bold mb-4">Admin</h2>
         <nav className="space-y-2">
-          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin">
+          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/dashboard">
             Dashboard
           </Link>
           <Link
@@ -46,6 +57,27 @@ export default function AdminApp() {
           </Link>
         </nav>
       </aside>
+
+      {/* ✅ Right-Side Content */}
+      <main className="flex-1 bg-gray-100 p-6">
+        {!showAuthModal ? (
+          <div>
+            <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+            <div className="bg-white p-4 rounded-xl shadow-md w-64">
+              <h2 className="text-lg font-semibold text-gray-700">
+                Total Consultations
+              </h2>
+              <p className="text-3xl font-bold text-blue-600">
+                {totalConsultations}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center h-full">
+            <p className="text-gray-500">🔒 Please verify password to access admin panel.</p>
+          </div>
+        )}
+      </main>
 
       {/* ✅ Modal Authentication */}
       {showAuthModal && (
