@@ -1,7 +1,22 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+
 import sandeep from "../assets/sandeep.jpg";
+import sandeep2 from "../assets/sandeep2.jpg";
+import sandeep3 from "../assets/sandeep3.jpg";
 
 export default function AboutSection() {
+  const images = [sandeep, sandeep2, sandeep3];
+  const [index, setIndex] = useState(0);
+
+  // Auto-slide every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   return (
     <section
       id="about-us"
@@ -39,19 +54,26 @@ export default function AboutSection() {
         </button>
       </motion.div>
 
-      {/* Right Image */}
+      {/* Right Image Slider */}
       <motion.div
-        className="flex-1 flex justify-center"
+        className="flex-1 flex justify-center relative overflow-hidden h-80" // fixed height for visibility
         initial={{ opacity: 0, x: 40 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
       >
-        <img
-          src={sandeep}
-          alt="CS Sandeep Rajbhar"
-          className="rounded-2xl shadow-lg w-64 md:w-80 object-cover"
-        />
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={images[index]}
+            src={images[index]}
+            alt="CS Sandeep Rajbhar"
+            className="rounded-2xl shadow-lg w-64 md:w-80 h-full object-cover absolute"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.6 }}
+          />
+        </AnimatePresence>
       </motion.div>
     </section>
   );

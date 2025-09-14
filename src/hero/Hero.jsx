@@ -73,7 +73,7 @@ export default function Hero() {
           Sandeep Rajbhar and Associates
         </h1>
         <div className="text-base md:text-lg text-right leading-tight">
-          <p>Ph: 9038581472</p>
+          <p>Ph:9038581472</p>
           <p>Email: cssandeeprajbhar@gmail.com</p>
         </div>
       </div>
@@ -190,7 +190,7 @@ export default function Hero() {
       )}
 
       {/* ✅ Bottom Navbar Component */}
-      <BottomNavbar />
+    
     </div>
   );
 }

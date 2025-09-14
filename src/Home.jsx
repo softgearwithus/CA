@@ -8,11 +8,12 @@ import TestimonialsSection from './components/TestimonialsSection'
 import ConsultationCTA from './components/ConsultationCTA'
 import ExploreUs from './components/ExploreUs'
 import Footer from './components/Footer'
+import BottomNavbar from './components/BottomNavbar'
 
 export default function Home() {
   return (
     <>
-    
+    <BottomNavbar/>
     <Hero/>
     <AboutSection/>
     <ServicesSection/>
