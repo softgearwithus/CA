@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function AdminApp() {
-  const [showAuthModal, setShowAuthModal] = useState(true); 
+  const [showAuthModal, setShowAuthModal] = useState(true);
+  const [email, setEmail] = useState(""); // ✅ New email state
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [totalConsultations, setTotalConsultations] = useState(0);
-
 
   useEffect(() => {
     if (!showAuthModal) {
@@ -22,6 +22,7 @@ export default function AdminApp() {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:5000/api/admin/verify", {
+        email,
         password,
       });
 
@@ -30,7 +31,7 @@ export default function AdminApp() {
         setError("");
       }
     } catch (err) {
-      setError("Access denied! Wrong password.");
+      setError("Access denied! Wrong email or password.");
     }
   };
 
@@ -43,16 +44,10 @@ export default function AdminApp() {
           <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/dashboard">
             Dashboard
           </Link>
-          <Link
-            className="block hover:bg-gray-700 p-2 rounded"
-            to="/admin/consultations"
-          >
+          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/consultations">
             Consultations
           </Link>
-          <Link
-            className="block hover:bg-gray-700 p-2 rounded"
-            to="/admin/blogs"
-          >
+          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/blogs">
             Blogs
           </Link>
         </nav>
@@ -74,7 +69,7 @@ export default function AdminApp() {
           </div>
         ) : (
           <div className="flex justify-center items-center h-full">
-            <p className="text-gray-500">🔒 Please verify password to access admin panel.</p>
+            <p className="text-gray-500">🔒 Please verify email & password to access admin panel.</p>
           </div>
         )}
       </main>
@@ -87,6 +82,16 @@ export default function AdminApp() {
               Admin Login
             </h2>
             <form onSubmit={handleVerify} className="space-y-4">
+              {/* ✅ Email Input */}
+              <input
+                type="email"
+                placeholder="Enter Admin Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              {/* ✅ Password Input */}
               <input
                 type="password"
                 placeholder="Enter Admin Password"
