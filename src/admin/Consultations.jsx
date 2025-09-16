@@ -9,7 +9,7 @@ export default function Consultations() {
   useEffect(() => {
     const fetchConsultations = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/consultations");
+        const res = await axios.get("https://ca-backend-tau.vercel.app/api/consultations");
         if (res.data.success) {
           setConsultations(res.data.data);
         } else {
