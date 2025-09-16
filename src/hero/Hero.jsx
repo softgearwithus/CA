@@ -27,7 +27,7 @@ export default function Hero() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/consultations", // ✅ Your backend URL
+        "https://ca-backend-tau.vercel.app/api/consultations", // ✅ Your backend URL
         formData,
         {
           headers: {

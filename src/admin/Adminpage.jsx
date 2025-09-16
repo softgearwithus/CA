@@ -1,43 +1,45 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import {useAuthStore} from "../store/useAuthStore.js";
 
 export default function AdminApp() {
-  const [showAuthModal, setShowAuthModal] = useState(true);
-  const [email, setEmail] = useState(""); // ✅ New email state
+  const { user, login, checkAuth, logout } = useAuthStore();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [totalConsultations, setTotalConsultations] = useState(0);
 
+  // ✅ restore auth state on page load
   useEffect(() => {
-    if (!showAuthModal) {
+    checkAuth();
+  }, [checkAuth]);
+
+  // ✅ fetch consultations if logged in
+  useEffect(() => {
+    if (user) {
       axios
-        .get("http://localhost:5000/api/admin/count")
+        .get("https://ca-backend-tau.vercel.app/api/admin/count", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
         .then((res) => setTotalConsultations(res.data.total))
         .catch(() => console.log("Error fetching total consultations"));
     }
-  }, [showAuthModal]);
+  }, [user]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post("http://localhost:5000/api/admin/verify", {
-        email,
-        password,
-      });
-
-      if (res.data.success) {
-        setShowAuthModal(false); // ✅ Hide popup on success
-        setError("");
-      }
-    } catch (err) {
+    const result = await login(email, password);
+    if (!result.success) {
       setError("Access denied! Wrong email or password.");
+    } else {
+      setError("");
     }
   };
 
   return (
     <div className="flex min-h-screen relative">
-      {/* ✅ Sidebar */}
+      {/* Sidebar */}
       <aside className="w-48 bg-gray-800 text-white p-4">
         <h2 className="text-xl font-bold mb-4">Admin</h2>
         <nav className="space-y-2">
@@ -51,11 +53,19 @@ export default function AdminApp() {
             Blogs
           </Link>
         </nav>
+        {user && (
+          <button
+            onClick={logout}
+            className="mt-4 w-full bg-red-500 p-2 rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
+        )}
       </aside>
 
-      {/* ✅ Right-Side Content */}
+      {/* Right-Side Content */}
       <main className="flex-1 bg-gray-100 p-6">
-        {!showAuthModal ? (
+        {user ? (
           <div>
             <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
             <div className="bg-white p-4 rounded-xl shadow-md w-64">
@@ -74,15 +84,12 @@ export default function AdminApp() {
         )}
       </main>
 
-      {/* ✅ Modal Authentication */}
-      {showAuthModal && (
+      {/* Modal Authentication */}
+      {!user && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm">
-            <h2 className="text-xl font-bold text-center mb-4">
-              Admin Login
-            </h2>
+            <h2 className="text-xl font-bold text-center mb-4">Admin Login</h2>
             <form onSubmit={handleVerify} className="space-y-4">
-              {/* ✅ Email Input */}
               <input
                 type="email"
                 placeholder="Enter Admin Email"
@@ -91,7 +98,6 @@ export default function AdminApp() {
                 required
                 className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              {/* ✅ Password Input */}
               <input
                 type="password"
                 placeholder="Enter Admin Password"

@@ -30,7 +30,7 @@ const handleSubmit = async (e) => {
     console.log("📤 Sending form data:", formData);
 
     const res = await axios.post(
-      "http://localhost:5000/api/consultations", // ✅ NO double slash
+      "https://ca-backend-tau.vercel.app/api/consultations",
       formData,
       {
         headers: {
