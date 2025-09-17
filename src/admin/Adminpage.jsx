@@ -43,7 +43,7 @@ export default function AdminApp() {
       <aside className="w-48 bg-gray-800 text-white p-4">
         <h2 className="text-xl font-bold mb-4">Admin</h2>
         <nav className="space-y-2">
-          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/dashboard">
+          <Link className="hidden hover:bg-gray-700 p-2 rounded" to="/admin/dashboard">
             Dashboard
           </Link>
           <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/consultations">
@@ -51,6 +51,9 @@ export default function AdminApp() {
           </Link>
           <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/blogs">
             Blogs
+          </Link>
+          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/download">
+            Download post
           </Link>
         </nav>
         {user && (
