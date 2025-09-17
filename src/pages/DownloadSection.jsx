@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 import BottomNavbar from '../components/BottomNavbar';
 
-const dummyDownloads = Array(10).fill({
-  act: 'Company Act',
-  section: 'Section 184',
-  form: 'MBP 1',
-  fileUrl: '/path/to/MBP1.pdf', // Replace with real file URL
-});
-
 const DownloadSection = () => {
+  const [downloads, setDownloads] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [userData, setUserData] = useState({
@@ -18,6 +12,20 @@ const DownloadSection = () => {
     mobile: '',
   });
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Fetch data from backend
+  useEffect(() => {
+    const fetchDownloads = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/admin/download`);
+        const data = await res.json();
+        setDownloads(data);
+      } catch (error) {
+        console.error("Error fetching downloads:", error);
+      }
+    };
+    fetchDownloads();
+  }, []);
 
   const handleDownloadClick = (file) => {
     setSelectedFile(file);
@@ -30,14 +38,13 @@ const DownloadSection = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-
     console.log('User Info:', userData);
 
-    // Trigger download
+    // Trigger file download
     if (selectedFile) {
       const link = document.createElement('a');
       link.href = selectedFile.fileUrl;
-      link.download = selectedFile.form + '.pdf';
+      link.download = selectedFile.mbp + '.pdf';
       link.click();
     }
 
@@ -48,8 +55,8 @@ const DownloadSection = () => {
   };
 
   // Filter downloads based on search query
-  const filteredDownloads = dummyDownloads.filter((item) =>
-    [item.act, item.section, item.form]
+  const filteredDownloads = downloads.filter((item) =>
+    [item.companyAct, item.section, item.mbp]
       .join(' ')
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
@@ -78,9 +85,9 @@ const DownloadSection = () => {
                 className="flex flex-col sm:flex-row justify-between items-center bg-amber-300 p-4 rounded-md shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row sm:gap-6 items-center mb-2 sm:mb-0">
-                  <span className="font-medium">{item.act}</span>
+                  <span className="font-medium">{item.companyAct}</span>
                   <span className="text-gray-700">{item.section}</span>
-                  <span className="text-gray-800 font-semibold">{item.form}</span>
+                  <span className="text-gray-800 font-semibold">{item.mbp}</span>
                 </div>
                 <button
                   onClick={() => handleDownloadClick(item)}
@@ -95,7 +102,7 @@ const DownloadSection = () => {
           )}
         </div>
 
-        {/* Modal */}
+        {/* Modal (unchanged) */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg w-full max-w-sm shadow-xl">
@@ -155,4 +162,4 @@ const DownloadSection = () => {
   );
 };
 
-export default DownloadSection;
+export default DownloadSection
