@@ -52,7 +52,7 @@ export default function AdminApp() {
           <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/blogs">
             Blogs
           </Link>
-          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/download">
+          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/dawnload-post">
             Download post
           </Link>
         </nav>

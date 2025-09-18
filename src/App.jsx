@@ -26,7 +26,7 @@ export default function App() {
           {/* admin */}
           <Route path="/admin" element={<AdminApp/>} />
           <Route path="/admin/consultations" element={<Consultations/>}/>
-          <Route path="/admin/dawnload" element={<DownloadAdmin/>}/>
+          <Route path="/admin/dawnload-post" element={<DownloadAdmin/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
