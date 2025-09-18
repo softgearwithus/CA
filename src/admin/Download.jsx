@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function DownloadAdmin() {
   const [formData, setFormData] = useState({
@@ -7,14 +7,32 @@ function DownloadAdmin() {
     mbp: "",
     fileUrl: "",
   });
+  const [uploads, setUploads] = useState([]); // fetched downloads
   const [uploadMessage, setUploadMessage] = useState("");
-  const [downloadCount] = useState(42); // dummy count
+  const [downloadCount, setDownloadCount] = useState(0);
   const API_URL = import.meta.env.VITE_BACKEND_API;
 
+  // Fetch all downloads
+  useEffect(() => {
+    const fetchDownloads = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/admin/download`);
+        const data = await res.json();
+        setUploads(data);
+        setDownloadCount(data.length);
+      } catch (error) {
+        console.error("Error fetching downloads:", error);
+      }
+    };
+    fetchDownloads();
+  }, [API_URL]);
+
+  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle upload
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -27,11 +45,32 @@ function DownloadAdmin() {
       if (res.ok) {
         setUploadMessage("✅ File uploaded successfully!");
         setFormData({ companyAct: "", section: "", mbp: "", fileUrl: "" });
+        setUploads((prev) => [...prev, data]); // add new file to list
+        setDownloadCount((prev) => prev + 1);
       } else {
         setUploadMessage("❌ " + data.message);
       }
     } catch (err) {
       setUploadMessage("⚠️ Server error, please try again later.");
+    }
+  };
+
+  // Handle delete
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this file?")) return;
+
+    try {
+      const res = await fetch(`${API_URL}/api/admin/download/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setUploads((prev) => prev.filter((item) => item._id !== id));
+        setDownloadCount((prev) => prev - 1);
+      } else {
+        console.error("Failed to delete file");
+      }
+    } catch (error) {
+      console.error("Error deleting file:", error);
     }
   };
 
@@ -102,8 +141,57 @@ function DownloadAdmin() {
             Downloads Stats
           </h2>
           <p className="text-5xl font-bold text-blue-700">{downloadCount}</p>
-          <p className="text-gray-600 mt-2">Total Downloads</p>
+          <p className="text-gray-600 mt-2">Total Files</p>
         </div>
+      </div>
+
+      {/* Download List */}
+      <div className="max-w-6xl mx-auto mt-10 bg-white p-6 rounded-xl shadow-lg">
+        <h2 className="text-xl font-semibold mb-4 text-gray-700">
+          Available Downloads
+        </h2>
+        {uploads.length === 0 ? (
+          <p className="text-gray-500">No files uploaded yet.</p>
+        ) : (
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-200 text-left">
+                <th className="p-3">Company Act</th>
+                <th className="p-3">Section</th>
+                <th className="p-3">Form</th>
+                <th className="p-3">File</th>
+                <th className="p-3">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {uploads.map((item) => (
+                <tr key={item._id} className="border-t">
+                  <td className="p-3">{item.companyAct}</td>
+                  <td className="p-3">{item.section}</td>
+                  <td className="p-3">{item.mbp}</td>
+                  <td className="p-3">
+                    <a
+                      href={item.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Download
+                    </a>
+                  </td>
+                  <td className="p-3">
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
