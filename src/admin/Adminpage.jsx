@@ -55,6 +55,9 @@ export default function AdminApp() {
           <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/dawnload-post">
             Download post
           </Link>
+          <Link className="block hover:bg-gray-700 p-2 rounded" to="/admin/calender-post">
+            Calender post
+          </Link>
         </nav>
         {user && (
           <button
