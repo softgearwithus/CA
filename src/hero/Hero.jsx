@@ -68,13 +68,20 @@ export default function Hero() {
       <FloatingCTA />
 
       {/* Top Bar */}
-      <div className="sticky top-0 z-50 bg-amber-200 px-6 py-4 flex justify-between items-center shadow-md">
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
-          Sandeep Rajbhar and Associates
-        </h1>
-        <div className="text-base md:text-lg text-right leading-tight">
-          <p>Ph:9038581472</p>
-          <p>Email: cssandeeprajbhar@gmail.com</p>
+      <div className="sticky top-0 z-50 bg-amber-200 px-6 py-4 flex items-center justify-between shadow-md">
+        <div className="flex items-center gap-4 flex-shrink-0">
+          <img
+            src="/src/assets/logo.jpg"
+            alt="Logo"
+            className="h-16 w-16 object-cover rounded-full border-2 border-black shadow-sm"
+          />
+          <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
+            Sandeep Rajbhar and Associates
+          </h1>
+        </div>
+        <div className="flex-shrink-0 text-sm md:text-base text-right leading-tight text-blue-800">
+          <p className="font-medium">Ph: 9038581472</p>
+          <p className="font-medium">Email: cssandeeprajbhar@gmail.com</p>
         </div>
       </div>
 
