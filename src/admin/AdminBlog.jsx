@@ -1,5 +1,6 @@
 // AdminBlog.jsx
 import React, { useState } from "react";
+const API_URL = import.meta.env.VITE_BACKEND_API;
 
 export default function AdminBlog() {
   const [title, setTitle] = useState("");
@@ -15,7 +16,7 @@ const handleSubmit = async (e) => {
     formData.append("content", content);
     if (image) formData.append("image", image); // ✅ use `image`
 
-    const res = await fetch("http://localhost:5000/api/blogs", {
+    const res = await fetch(`{API_URL}/api/blogs`, {
       method: "POST",
       body: formData,
     });
