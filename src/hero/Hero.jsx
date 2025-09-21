@@ -9,10 +9,10 @@ export default function Hero() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    visitedBy: "",       // ✅ New field
+    visitedBy: "",
     phone: "",
-    designation: "",     // ✅ New field
-    address: "",         // ✅ New field
+    designation: "",
+    address: "",
     message: "",
   });
 
