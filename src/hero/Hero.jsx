@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import FloatingCTA from "../components/FloatingCTA";
 import BottomNavbar from "../components/BottomNavbar";
+import Logo from "../assets/logo.jpg"
 
 export default function Hero() {
   const [showModal, setShowModal] = useState(false);
@@ -68,27 +69,29 @@ export default function Hero() {
       <FloatingCTA />
 
       {/* Top Bar */}
-      <div className="sticky top-0 z-50 bg-amber-200 px-6 py-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-4 flex-shrink-0">
-          <img
-            src="/src/assets/logo.jpg"
-            alt="Logo"
-            className="h-16 w-16 object-cover rounded-full border-2 border-black shadow-sm"
-          />
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
-            Sandeep Rajbhar and Associates
-          </h1>
-        </div>
-        <div className="flex-shrink-0 text-sm md:text-base text-right leading-tight text-blue-800">
-          <p className="font-medium">Ph: 9038581472</p>
-          <p className="font-medium">Email: cssandeeprajbhar@gmail.com</p>
+      <div className="sticky top-0 z-50 bg-amber-200 px-4 md:px-6 py-3 md:py-4 shadow-md">
+        <div className="flex flex-col md:flex-row items-center md:justify-between gap-3 md:gap-4">
+          <div className="flex items-center gap-3 md:gap-4 flex-shrink-0">
+            <img
+              src={Logo}
+              alt="Logo"
+              className="h-12 w-12 md:h-16 md:w-16 object-cover rounded-full border-2 border-black shadow-sm"
+            />
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-blue-900 text-center md:text-left">
+              Sandeep Rajbhar and Associates
+            </h1>
+          </div>
+          <div className="flex-shrink-0 text-xs sm:text-sm md:text-base text-center md:text-right leading-tight text-blue-800">
+            <p className="font-medium">Ph: 9038581472</p>
+            <p className="font-medium">Email: cssandeeprajbhar@gmail.com</p>
+          </div>
         </div>
       </div>
 
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col justify-center items-center text-center px-6">
+      <main className="flex-1 flex flex-col justify-center items-center text-center px-4 md:px-6 py-8 md:py-0">
         <motion.h1
-          className="text-6xl md:text-7xl font-extrabold text-blue-900"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-blue-900"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
@@ -97,7 +100,7 @@ export default function Hero() {
         </motion.h1>
 
         <motion.p
-          className="text-2xl md:text-3xl text-gray-700 mt-4"
+          className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 mt-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -106,13 +109,13 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          className="mt-8 flex gap-6 flex-wrap justify-center"
+          className="mt-6 md:mt-8 flex flex-col sm:flex-row gap-4 md:gap-6 w-full max-w-md sm:max-w-none justify-center"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.7 }}
         >
           <button
-            className="px-8 py-4 rounded-2xl bg-blue-600 text-white text-lg font-semibold shadow-md hover:bg-blue-700 transition"
+            className="px-6 md:px-8 py-3 md:py-4 rounded-2xl bg-blue-600 text-white text-base md:text-lg font-semibold shadow-md hover:bg-blue-700 transition w-full sm:w-auto"
             onClick={() => setShowModal(true)}
           >
             Book Free Consultation
@@ -121,7 +124,7 @@ export default function Hero() {
             href="https://www.youtube.com/@Synopsis24"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-4 rounded-2xl border border-blue-400 text-blue-600 text-lg font-semibold hover:bg-blue-100 transition"
+            className="px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-blue-400 text-blue-600 text-base md:text-lg font-semibold hover:bg-blue-100 transition w-full sm:w-auto text-center"
           >
             Explore YouTube Channel
           </a>
@@ -130,17 +133,17 @@ export default function Hero() {
 
       {/* Modal Popup */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[1000]">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[1000] p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg"
+            className="bg-white p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
           >
-            <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">
+            <h2 className="text-xl md:text-2xl font-bold text-center text-blue-900 mb-4">
               Book Your Free Consultation
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
               {/* Name */}
               <input
                 type="text"
@@ -149,7 +152,7 @@ export default function Hero() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2.5 md:p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
               />
 
               {/* Email */}
@@ -160,7 +163,7 @@ export default function Hero() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2.5 md:p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
               />
 
               {/* Visited By */}
@@ -169,7 +172,7 @@ export default function Hero() {
                 value={formData.visitedBy}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2.5 md:p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
               >
                 <option value="">Visited here by...</option>
                 <option value="Youtube">Youtube</option>
@@ -187,7 +190,7 @@ export default function Hero() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2.5 md:p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
               />
 
               {/* Designation */}
@@ -196,7 +199,7 @@ export default function Hero() {
                 value={formData.designation}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2.5 md:p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
               >
                 <option value="">Select Designation</option>
                 <option value="Director/Founder/Business Owner">Director/Founder/Business Owner</option>
@@ -213,7 +216,7 @@ export default function Hero() {
                 value={formData.address}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2.5 md:p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base min-h-[80px]"
               />
 
               {/* Message */}
@@ -222,21 +225,21 @@ export default function Hero() {
                 placeholder="Please share your problem in short"
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2.5 md:p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base min-h-[80px]"
               />
 
               {/* Buttons */}
-              <div className="flex justify-end gap-4">
+              <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-200 rounded-xl hover:bg-gray-300"
+                  className="px-4 py-2 bg-gray-200 rounded-xl hover:bg-gray-300 text-sm md:text-base order-2 sm:order-1"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 text-sm md:text-base order-1 sm:order-2"
                   disabled={loading}
                 >
                   {loading ? "Submitting..." : "Submit"}
