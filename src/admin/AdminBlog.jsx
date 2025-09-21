@@ -1,5 +1,5 @@
-// AdminBlog.jsx
 import React, { useState } from "react";
+
 const API_URL = import.meta.env.VITE_BACKEND_API;
 
 export default function AdminBlog() {
@@ -7,15 +7,17 @@ export default function AdminBlog() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for empty inputs
-    if (!title.trim() || !content.trim()) {
+    if (!title || !content) {
       alert("Please fill in both title and content.");
       return;
     }
+
+    setLoading(true);
 
     try {
       const formData = new FormData();
@@ -30,24 +32,27 @@ export default function AdminBlog() {
 
       if (!res.ok) {
         const text = await res.text();
-        console.error("Server error:", res.status, text);
-        alert("Failed to post blog. Check console for details.");
-        return;
+        console.error("Server Error:", res.status, text);
+        throw new Error(`Request failed with status ${res.status}`);
       }
 
       const data = await res.json();
       console.log("Uploaded:", data);
 
-      // Update blogs list and reset form
-      setBlogs([data, ...blogs]);
+      // Update blogs list
+      setBlogs([data.data, ...blogs]);
+
+      // Reset form
       setTitle("");
       setContent("");
       setImage(null);
 
-      alert("Blog posted successfully!"); // ✅ Success alert
+      alert("Blog posted successfully!");
     } catch (err) {
       console.error("Error uploading blog:", err);
-      alert("Error posting blog. Check console.");
+      alert("Error uploading blog: " + (err.message || "Something went wrong"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,11 +87,22 @@ export default function AdminBlog() {
           className="mt-2"
         />
 
+        {image && (
+          <img
+            src={URL.createObjectURL(image)}
+            alt="preview"
+            className="w-48 h-48 object-cover mt-2 rounded-lg"
+          />
+        )}
+
         <button
           type="submit"
-          className="bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+          disabled={loading}
+          className={`${
+            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+          } text-white p-3 rounded-lg text-lg font-semibold transition-colors`}
         >
-          Post Blog
+          {loading ? "Posting..." : "Post Blog"}
         </button>
       </form>
 
@@ -97,7 +113,7 @@ export default function AdminBlog() {
       <div className="grid md:grid-cols-2 gap-6">
         {blogs.map((blog) => (
           <div
-            key={blog.id}
+            key={blog._id}
             className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow"
           >
             {blog.image && (
@@ -108,7 +124,9 @@ export default function AdminBlog() {
               />
             )}
             <div className="p-5">
-              <h4 className="font-bold text-xl text-gray-900 mb-3">{blog.title}</h4>
+              <h4 className="font-bold text-xl text-gray-900 mb-3">
+                {blog.title}
+              </h4>
               <p className="text-gray-700">{blog.content}</p>
             </div>
           </div>
