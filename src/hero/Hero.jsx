@@ -240,7 +240,6 @@ export default function Hero() {
         </div>
       )}
 
-      <BottomNavbar />
     </div>
   );
 }
