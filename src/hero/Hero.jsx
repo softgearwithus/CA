@@ -9,7 +9,10 @@ export default function Hero() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    visitedBy: "",       // ✅ New field
     phone: "",
+    designation: "",     // ✅ New field
+    address: "",         // ✅ New field
     message: "",
   });
 
@@ -27,13 +30,11 @@ export default function Hero() {
 
     try {
       const res = await axios.post(
-        "https://ca-backend-tau.vercel.app/api/consultations", // ✅ Your backend URL
+        "https://ca-backend-tau.vercel.app/api/consultations",
         formData,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true, // if backend uses cookies
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
       );
 
@@ -42,22 +43,21 @@ export default function Hero() {
       if (res.data.success) {
         alert("Your consultation request has been submitted!");
         setShowModal(false);
-        setFormData({ name: "", email: "", phone: "", message: "" });
+        setFormData({
+          name: "",
+          email: "",
+          visitedBy: "",
+          phone: "",
+          designation: "",
+          address: "",
+          message: "",
+        });
       } else {
         alert("❌ Submission failed. Please try again.");
       }
     } catch (error) {
       console.error("❌ Axios Error:", error);
-      if (error.response) {
-        console.error("🔴 Response Error:", error.response.data);
-        alert(`Server Error: ${error.response.data.message || "Unknown error"}`);
-      } else if (error.request) {
-        console.error("🟠 No response received:", error.request);
-        alert("No response from server. Is backend running?");
-      } else {
-        console.error("⚠️ Setup Error:", error.message);
-        alert("Something went wrong. Check console logs.");
-      }
+      alert("Something went wrong. Check console logs.");
     } finally {
       setLoading(false);
     }
@@ -134,6 +134,7 @@ export default function Hero() {
               Book Your Free Consultation
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Name */}
               <input
                 type="text"
                 name="name"
@@ -143,6 +144,8 @@ export default function Hero() {
                 required
                 className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
+
+              {/* Email */}
               <input
                 type="email"
                 name="email"
@@ -152,6 +155,24 @@ export default function Hero() {
                 required
                 className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
+
+              {/* Visited By */}
+              <select
+                name="visitedBy"
+                value={formData.visitedBy}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="">Visited here by...</option>
+                <option value="Youtube">Youtube</option>
+                <option value="Facebook Page">Facebook Page</option>
+                <option value="Google Search">Google Search</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Other">Other</option>
+              </select>
+
+              {/* Phone */}
               <input
                 type="tel"
                 name="phone"
@@ -161,13 +182,43 @@ export default function Hero() {
                 required
                 className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
+
+              {/* Designation */}
+              <select
+                name="designation"
+                value={formData.designation}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="">Select Designation</option>
+                <option value="Director/Founder/Business Owner">Director/Founder/Business Owner</option>
+                <option value="CA/CS/CMA/Adv">CA / CS / CMA / Adv</option>
+                <option value="Investor/IEPF">Investor / IEPF</option>
+                <option value="Student">Student</option>
+                <option value="Other">Other</option>
+              </select>
+
+              {/* Address */}
+              <textarea
+                name="address"
+                placeholder="Full Address"
+                value={formData.address}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+
+              {/* Message */}
               <textarea
                 name="message"
-                placeholder="Your Message (Optional)"
+                placeholder="Please share your problem in short"
                 value={formData.message}
                 onChange={handleChange}
                 className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
+
+              {/* Buttons */}
               <div className="flex justify-end gap-4">
                 <button
                   type="button"
@@ -189,8 +240,7 @@ export default function Hero() {
         </div>
       )}
 
-      {/* ✅ Bottom Navbar Component */}
-    
+      <BottomNavbar />
     </div>
   );
 }
