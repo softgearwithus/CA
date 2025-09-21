@@ -11,6 +11,7 @@ import AdminApp from "./admin/Adminpage";
 import Consultations from "./admin/Consultations";
 import DownloadAdmin from "./admin/Download";
 import ComplianceAdmin from "./admin/Calender";
+import AdminBlog from "./admin/AdminBlog";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/admin/consultations" element={<Consultations/>}/>
           <Route path="/admin/dawnload-post" element={<DownloadAdmin/>}/>
           <Route path="/admin/calender-post" element={<ComplianceAdmin/>}/>
+          <Route path="/admin/blogs" element={<AdminBlog/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
