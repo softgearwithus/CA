@@ -13,16 +13,17 @@ import BottomNavbar from './components/BottomNavbar'
 export default function Home() {
   return (
     <>
-    <BottomNavbar/>
-    <Hero/>
-    <AboutSection/>
-    <ServicesSection/>
-    <BlogSection/>
-    <ComplianceSection/>
-    <TestimonialsSection/>
-    <ConsultationCTA/>
-    <ExploreUs/>
-    <Footer/>
+
+      <Hero />
+      <AboutSection />
+      <ServicesSection />
+      <BlogSection />
+      <ComplianceSection />
+      <TestimonialsSection />
+      <ConsultationCTA />
+      <ExploreUs />
+      <Footer />
+      <BottomNavbar />
     </>
   )
 }
