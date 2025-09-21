@@ -11,6 +11,7 @@ export default function ComplianceAdmin() {
     updateTitle: "",
     updateDate: "",
     newsletterMonth: "",
+    newsletterDriveLink: "",
     eventTitle: "",
     eventDesc: "",
     eventDue: "",
@@ -25,7 +26,9 @@ export default function ComplianceAdmin() {
     try {
       const [u, n, e] = await Promise.all([
         fetch(`${API_URL}/api/admin/compliance/update`).then((r) => r.json()),
-        fetch(`${API_URL}/api/admin/compliance/newsletter`).then((r) => r.json()),
+        fetch(`${API_URL}/api/admin/compliance/newsletter`).then((r) =>
+          r.json()
+        ),
         fetch(`${API_URL}/api/admin/compliance/event`).then((r) => r.json()),
       ]);
       setUpdates(u);
@@ -36,30 +39,61 @@ export default function ComplianceAdmin() {
     }
   };
 
-  // Handle form changes
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // ✅ Improved handleChange
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
 
-  // Post APIs
+
   const addUpdate = async () => {
+    if (!formData.updateTitle || !formData.updateDate) {
+      return alert("Title and Date are required");
+    }
     await fetch(`${API_URL}/api/admin/compliance/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: formData.updateTitle, date: formData.updateDate }),
+      body: JSON.stringify({
+        title: formData.updateTitle,
+        date: formData.updateDate,
+      }),
     });
+    setFormData((prev) => ({ ...prev, updateTitle: "", updateDate: "" }));
     fetchData();
   };
 
   const addNewsletter = async () => {
-    await fetch(`${API_URL}/api/admin/compliance/newsletter`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ month: formData.newsletterMonth }),
-    });
-    fetchData();
+    if (!formData.newsletterMonth) return alert("Month is required");
+
+    try {
+      const res = await fetch(`${API_URL}/api/admin/compliance/newsletter`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          month: formData.newsletterMonth,
+          driveLink: formData.newsletterDriveLink, // ✅ always sent
+        }),
+      });
+
+      const data = await res.json();
+      console.log("Saved newsletter:", data);
+
+      setFormData((prev) => ({
+        ...prev,
+        newsletterMonth: "",
+        newsletterDriveLink: "",
+      }));
+
+      fetchData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const addEvent = async () => {
+    if (!formData.eventTitle || !formData.eventDesc || !formData.eventDue)
+      return alert("All event fields are required");
+
     await fetch(`${API_URL}/api/admin/compliance/event`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -69,10 +103,17 @@ export default function ComplianceAdmin() {
         due: formData.eventDue,
       }),
     });
+
+    setFormData((prev) => ({
+      ...prev,
+      eventTitle: "",
+      eventDesc: "",
+      eventDue: "",
+    }));
+
     fetchData();
   };
 
-  // Delete API
   const handleDelete = async (type, id) => {
     try {
       await fetch(`${API_URL}/api/admin/compliance/${type}/${id}`, {
@@ -117,14 +158,15 @@ export default function ComplianceAdmin() {
             Add Update
           </button>
 
-          {/* Show updates */}
           <div className="mt-4 space-y-2">
             {updates.map((u) => (
               <div
                 key={u._id}
                 className="flex justify-between items-center bg-gray-100 p-2 rounded"
               >
-                <span>{u.title} – {u.date}</span>
+                <span>
+                  {u.title} – {u.date}
+                </span>
                 <button
                   onClick={() => handleDelete("update", u._id)}
                   className="text-red-500"
@@ -148,6 +190,14 @@ export default function ComplianceAdmin() {
             onChange={handleChange}
             className="w-full p-2 mb-2 border rounded"
           />
+        <input
+  name="newsletterDriveLink"
+  placeholder="Google Drive Link"
+  value={formData.newsletterDriveLink}
+  onChange={handleChange}
+  className="w-full p-2 mb-2 border rounded"
+/>
+
           <button
             onClick={addNewsletter}
             className="bg-blue-600 text-white px-4 py-2 rounded"
@@ -155,14 +205,25 @@ export default function ComplianceAdmin() {
             Add Newsletter
           </button>
 
-          {/* Show newsletters */}
           <div className="mt-4 space-y-2">
             {newsletters.map((n) => (
               <div
                 key={n._id}
                 className="flex justify-between items-center bg-gray-100 p-2 rounded"
               >
-                <span>{n.month}</span>
+                <span>
+                  {n.month}{" "}
+                  {n.driveLink && (
+                    <a
+                      href={n.driveLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline ml-2"
+                    >
+                      View File
+                    </a>
+                  )}
+                </span>
                 <button
                   onClick={() => handleDelete("newsletter", n._id)}
                   className="text-red-500"
@@ -207,7 +268,6 @@ export default function ComplianceAdmin() {
             Add Event
           </button>
 
-          {/* Show events */}
           <div className="mt-4 space-y-2">
             {events.map((e) => (
               <div
