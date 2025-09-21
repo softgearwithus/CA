@@ -8,33 +8,48 @@ export default function AdminBlog() {
   const [image, setImage] = useState(null);
   const [blogs, setBlogs] = useState([]);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    if (image) formData.append("image", image); // ✅ use `image`
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const res = await fetch(`{API_URL}/api/blogs`, {
-      method: "POST",
-      body: formData,
-    });
+    // Check for empty inputs
+    if (!title.trim() || !content.trim()) {
+      alert("Please fill in both title and content.");
+      return;
+    }
 
-    const data = await res.json();
-    console.log("Uploaded:", data);
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      if (image) formData.append("image", image);
 
-    // Optional: Update blogs list after posting
-    setBlogs([data, ...blogs]);
-    setTitle("");
-    setContent("");
-    setImage(null);
-  } catch (err) {
-    console.error("Error uploading blog:", err);
-  }
-};
+      const res = await fetch(`${API_URL}/api/blogs`, {
+        method: "POST",
+        body: formData,
+      });
 
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Server error:", res.status, text);
+        alert("Failed to post blog. Check console for details.");
+        return;
+      }
 
+      const data = await res.json();
+      console.log("Uploaded:", data);
+
+      // Update blogs list and reset form
+      setBlogs([data, ...blogs]);
+      setTitle("");
+      setContent("");
+      setImage(null);
+
+      alert("Blog posted successfully!"); // ✅ Success alert
+    } catch (err) {
+      console.error("Error uploading blog:", err);
+      alert("Error posting blog. Check console.");
+    }
+  };
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
