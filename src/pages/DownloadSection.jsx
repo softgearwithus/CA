@@ -17,11 +17,13 @@ const DownloadSection = () => {
   useEffect(() => {
     const fetchDownloads = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/admin/download`);
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_API}/api/admin/download`
+        );
         const data = await res.json();
         setDownloads(data);
       } catch (error) {
-        console.error("Error fetching downloads:", error);
+        console.error('Error fetching downloads:', error);
       }
     };
     fetchDownloads();
@@ -40,12 +42,9 @@ const DownloadSection = () => {
     e.preventDefault();
     console.log('User Info:', userData);
 
-    // Trigger file download
+    // ✅ Open Google Drive file in a new tab (instead of download)
     if (selectedFile) {
-      const link = document.createElement('a');
-      link.href = selectedFile.fileUrl;
-      link.download = selectedFile.mbp + '.pdf';
-      link.click();
+      window.open(selectedFile.fileUrl, '_blank');
     }
 
     // Reset
@@ -93,7 +92,7 @@ const DownloadSection = () => {
                   onClick={() => handleDownloadClick(item)}
                   className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
                 >
-                  Download
+                  View File
                 </button>
               </div>
             ))
@@ -102,7 +101,7 @@ const DownloadSection = () => {
           )}
         </div>
 
-        {/* Modal (unchanged) */}
+        {/* Modal */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg w-full max-w-sm shadow-xl">
@@ -142,7 +141,7 @@ const DownloadSection = () => {
                     type="submit"
                     className="bg-amber-500 text-white px-4 py-2 rounded hover:bg-amber-600 transition"
                   >
-                    Submit & Download
+                    Submit & View File
                   </button>
                   <button
                     type="button"
@@ -162,4 +161,4 @@ const DownloadSection = () => {
   );
 };
 
-export default DownloadSection
+export default DownloadSection;

@@ -7,7 +7,7 @@ function DownloadAdmin() {
     mbp: "",
     fileUrl: "",
   });
-  const [uploads, setUploads] = useState([]); // fetched downloads
+  const [uploads, setUploads] = useState([]);
   const [uploadMessage, setUploadMessage] = useState("");
   const [downloadCount, setDownloadCount] = useState(0);
   const API_URL = import.meta.env.VITE_BACKEND_API;
@@ -35,6 +35,13 @@ function DownloadAdmin() {
   // Handle upload
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ✅ Ensure only Google Drive link is accepted
+    if (!formData.fileUrl.includes("drive.google.com")) {
+      setUploadMessage("❌ Please provide a valid Google Drive link.");
+      return;
+    }
+
     try {
       const res = await fetch(`${API_URL}/api/admin/download`, {
         method: "POST",
@@ -45,7 +52,7 @@ function DownloadAdmin() {
       if (res.ok) {
         setUploadMessage("✅ File uploaded successfully!");
         setFormData({ companyAct: "", section: "", mbp: "", fileUrl: "" });
-        setUploads((prev) => [...prev, data]); // add new file to list
+        setUploads((prev) => [...prev, data]);
         setDownloadCount((prev) => prev + 1);
       } else {
         setUploadMessage("❌ " + data.message);
@@ -71,6 +78,19 @@ function DownloadAdmin() {
       }
     } catch (error) {
       console.error("Error deleting file:", error);
+    }
+  };
+
+  // ✅ Convert Google Drive share link → direct download link
+  const getDirectDownloadLink = (url) => {
+    try {
+      if (url.includes("file/d/")) {
+        const fileId = url.split("file/d/")[1].split("/")[0];
+        return `https://drive.google.com/uc?export=download&id=${fileId}`;
+      }
+      return url; // fallback if invalid
+    } catch {
+      return url;
     }
   };
 
@@ -117,7 +137,7 @@ function DownloadAdmin() {
             <input
               type="text"
               name="fileUrl"
-              placeholder="File URL"
+              placeholder="Google Drive File URL"
               value={formData.fileUrl}
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded"
@@ -171,7 +191,7 @@ function DownloadAdmin() {
                   <td className="p-3">{item.mbp}</td>
                   <td className="p-3">
                     <a
-                      href={item.fileUrl}
+                      href={getDirectDownloadLink(item.fileUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
