@@ -59,7 +59,7 @@ const BlogList = () => {
                     {blog.excerpt || blog.content.slice(0, 100) + "..."}
                   </p>
                   <Link
-                    to={`/blog/${blog._id}`}
+                    to={`/blogs/${blog._id}`}
                     className="text-amber-600 font-semibold hover:underline"
                   >
                     Read More →

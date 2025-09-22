@@ -24,7 +24,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/downloads" element={<DownloadSection />} />
           <Route path="/blogs" element={<BlogList />} />
-          <Route path="/blog/:id" element={<BlogDetails/>} />
+          <Route path="/blogs/:id" element={<BlogDetails/>} />
           {/* admin */}
           <Route path="/admin" element={<AdminApp/>} />
           <Route path="/admin/consultations" element={<Consultations/>}/>
