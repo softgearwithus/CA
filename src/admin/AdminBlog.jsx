@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const API_URL = import.meta.env.VITE_BACKEND_API;
 
@@ -8,6 +8,21 @@ export default function AdminBlog() {
   const [image, setImage] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // ✅ Fetch blogs on load
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const fetchBlogs = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/blogs`);
+      const data = await res.json();
+      setBlogs(data.data || []);
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,17 +47,12 @@ export default function AdminBlog() {
 
       if (!res.ok) {
         const text = await res.text();
-        console.error("Server Error:", res.status, text);
-        throw new Error(`Request failed with status ${res.status}`);
+        throw new Error(`Request failed with status ${res.status}: ${text}`);
       }
 
       const data = await res.json();
-      console.log("Uploaded:", data);
-
-      // Update blogs list
       setBlogs([data.data, ...blogs]);
 
-      // Reset form
       setTitle("");
       setContent("");
       setImage(null);
@@ -56,10 +66,32 @@ export default function AdminBlog() {
     }
   };
 
+  // ✅ Delete Blog
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this blog?")) return;
+
+    try {
+      const res = await fetch(`${API_URL}/api/blogs/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setBlogs(blogs.filter((b) => b._id !== id));
+        alert("Blog deleted successfully ✅");
+      } else {
+        const err = await res.json();
+        alert("Failed to delete blog: " + err.message);
+      }
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+    }
+  };
+
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <h2 className="text-3xl font-bold mb-6 text-gray-800">Admin Blog Panel</h2>
 
+      {/* Blog Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-xl shadow-lg flex flex-col gap-5"
@@ -106,31 +138,44 @@ export default function AdminBlog() {
         </button>
       </form>
 
+      {/* Blog List */}
       <h3 className="text-2xl font-semibold mt-10 mb-6 text-gray-800">
         Posted Blogs
       </h3>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {blogs.map((blog) => (
-          <div
-            key={blog._id}
-            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow"
-          >
-            {blog.image && (
-              <img
-                src={blog.image}
-                alt={blog.title}
-                className="w-full h-64 object-cover"
-              />
-            )}
-            <div className="p-5">
-              <h4 className="font-bold text-xl text-gray-900 mb-3">
-                {blog.title}
-              </h4>
-              <p className="text-gray-700">{blog.content}</p>
+        {blogs.length === 0 ? (
+          <p>No blogs posted yet.</p>
+        ) : (
+          blogs.map((blog) => (
+            <div
+              key={blog._id}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+            >
+              {blog.image && (
+                <img
+                  src={blog.image}
+                  alt={blog.title}
+                  className="w-full h-64 object-cover"
+                />
+              )}
+              <div className="p-5">
+                <h4 className="font-bold text-xl text-gray-900 mb-3">
+                  {blog.title}
+                </h4>
+                <p className="text-gray-700 mb-3">{blog.content}</p>
+
+                {/* ✅ Delete Button */}
+                <button
+                  onClick={() => handleDelete(blog._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
