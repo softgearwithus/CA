@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../components/Footer";
+
 
 export default function BlogDetails() {
   const [blogs, setBlogs] = useState([]);
@@ -62,7 +62,7 @@ export default function BlogDetails() {
           ))}
         </div>
       </div>
-      <Footer />
+      
     </>
   );
 }
