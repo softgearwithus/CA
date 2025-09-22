@@ -163,7 +163,7 @@ export default function AdminBlog() {
                 <h4 className="font-bold text-xl text-gray-900 mb-3">
                   {blog.title}
                 </h4>
-                <p className="text-gray-700 mb-3">{blog.content}</p>
+               
 
                 {/* ✅ Delete Button */}
                 <button
