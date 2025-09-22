@@ -48,9 +48,7 @@ export default function BlogDetails() {
               />
               <div className="p-4">
                 <h3 className="text-xl font-semibold mb-2">{blog.title}</h3>
-                <p className="text-gray-700 text-sm mb-3 line-clamp-3">
-                  {blog.excerpt || blog.content?.slice(0, 100) + "..."}
-                </p>
+               
                 <Link
                   to={`/blogs/${blog._id || blog.id}`}
                   className="text-amber-600 font-semibold hover:underline"

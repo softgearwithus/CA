@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { Editor } from '@tinymce/tinymce-react';
 const API_URL = import.meta.env.VITE_BACKEND_API;
 
 export default function AdminBlog() {
@@ -104,13 +104,23 @@ export default function AdminBlog() {
           className="p-3 border border-gray-300 rounded-lg text-gray-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <textarea
-          placeholder="Write your blog content here..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows="6"
-          className="p-3 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-        ></textarea>
+        <Editor
+  apiKey="5xs0yljb82dq3ugaderpd4dig4ci54cgj8knjkcvjpac8cw7" // free version
+  value={content}
+  init={{
+    height: 400,
+    menubar: false,
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table paste code help wordcount'
+    ],
+    toolbar: 'undo redo | formatselect | bold italic backcolor | \
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help'
+  }}
+  onEditorChange={(newValue) => setContent(newValue)}
+/>
 
         <input
           type="file"

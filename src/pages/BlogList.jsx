@@ -55,9 +55,7 @@ const BlogList = () => {
                     {new Date(blog.createdAt).toLocaleDateString()} •{" "}
                     {blog.author}
                   </p>
-                  <p className="text-gray-700 mb-3">
-                    {blog.excerpt || blog.content.slice(0, 100) + "..."}
-                  </p>
+               
                   <Link
                     to={`/blogs/${blog._id}`}
                     className="text-amber-600 font-semibold hover:underline"
