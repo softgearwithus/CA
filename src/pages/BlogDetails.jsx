@@ -1,86 +1,122 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import Footer from "../components/Footer";
-import BottomNavbar from "../components/BottomNavbar";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Search, Mic } from "lucide-react";
 
-const BlogDetails = () => {
-  const { id } = useParams();
-  const [blog, setBlog] = useState(null);
+const filters = ["Company Law", "Gst.", "Tax.", "RBI.", "Other"];
+
+export default function BlogSection() {
+  const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const API_URL = import.meta.env.VITE_BACKEND_API;
 
+  // ✅ Fetch blogs
   useEffect(() => {
-    const fetchBlog = async () => {
+    const fetchBlogs = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/blogs/${id}`);
+        const res = await fetch(`${API_URL}/api/blogs`);
         const data = await res.json();
         if (data.success) {
-          setBlog(data.data);
-        } else {
-          setBlog(null);
+          setBlogs(data.data);
         }
-      } catch (error) {
-        console.error("Error fetching blog:", error);
-        setBlog(null);
+      } catch (err) {
+        console.error("Error fetching blogs:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBlog();
-  }, [id]);
-
-  if (loading) {
-    return <p className="p-6 text-gray-600">Loading blog...</p>;
-  }
-
-  if (!blog) {
-    return (
-      <div className="p-6 min-h-screen bg-gray-50">
-        <BottomNavbar />
-        <h2 className="text-xl font-semibold">Blog not found</h2>
-        <Link to="/blogs" className="text-amber-600 hover:underline block mt-4">
-          ← Back to Blogs
-        </Link>
-        <Footer />
-      </div>
-    );
-  }
+    fetchBlogs();
+  }, []);
 
   return (
-    <>
-      <BottomNavbar />
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <div className="max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
-          {blog.image && (
-            <img
-              src={blog.image}
-              alt={blog.title}
-              className="w-full h-72 object-cover rounded-lg mb-6"
-            />
-          )}
+    <section className="px-6 md:px-20 py-12 mt-14 bg-[#E6E2F2] rounded-xl shadow-md max-w-7xl mx-auto">
+      {/* Title */}
+      <motion.h2
+        className="text-4xl md:text-5xl font-bold text-blue-900 mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+      >
+        Our Blogs
+      </motion.h2>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{blog.title}</h1>
-          <p className="text-sm text-gray-500 mb-6">
-            {new Date(blog.createdAt).toLocaleDateString()} •{" "}
-            {blog.author || "Softgear Team"}
-          </p>
+      {/* Search Bar */}
+      <div className="flex items-center justify-between bg-white rounded-full shadow-sm px-4 py-2 mb-6 max-w-lg">
+        <div className="flex items-center w-full">
+          <Search className="w-5 h-5 text-gray-500 mr-2" />
+          <input
+            type="text"
+            placeholder="Search Blogs..."
+            className="flex-1 outline-none bg-transparent text-gray-700"
+          />
+        </div>
+        <Mic className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
+      </div>
 
-          <div className="prose prose-lg text-gray-800 leading-relaxed">
-            {blog.content}
-          </div>
+      {/* Filter Chips */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        {filters.map((filter, idx) => (
+          <button
+            key={idx}
+            className="bg-[#D1C5F0] hover:bg-[#C2B4E3] text-gray-700 font-medium px-4 py-1 rounded-full text-sm transition"
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
 
+      {/* Blog Cards */}
+      {loading ? (
+        <p className="text-gray-600">Loading blogs...</p>
+      ) : blogs.length === 0 ? (
+        <p className="text-gray-600">No blogs available.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {blogs.slice(0, 4).map((blog, index) => (
+            <motion.div
+              key={blog._id}
+              className="bg-[#E6C69D] rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <Link to={`/blogs/${blog._id}`}>
+                <img
+                  src={blog.image || "https://via.placeholder.com/300"}
+                  alt={blog.title}
+                  className="w-full h-44 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {blog.title}
+                  </h3>
+                  <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
+                    {blog.content}
+                  </p>
+                  <span className="text-amber-600 text-sm mt-2 inline-block">
+                    Read more →
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Show More Link */}
+      {blogs.length > 4 && (
+        <div className="text-center mt-8">
           <Link
             to="/blogs"
-            className="mt-6 inline-block text-amber-600 hover:underline"
+            className="text-blue-700 font-medium hover:underline"
           >
-            ← Back to Blogs
+            View All Blogs →
           </Link>
         </div>
-      </div>
-      <Footer />
-    </>
+      )}
+    </section>
   );
-};
-
-export default BlogDetails;
+}
