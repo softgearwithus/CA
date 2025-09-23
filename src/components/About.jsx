@@ -7,7 +7,7 @@ import i3 from "../assets/3.jpg";
 import i4 from "../assets/4.jpg";
 
 export default function AboutSection() {
-  const images = [i1,i2,i3,i4];
+  const images = [i1, i2, i3, i4];
   const [index, setIndex] = useState(0);
 
   // Auto-slide every 3 seconds
@@ -21,9 +21,9 @@ export default function AboutSection() {
   return (
     <section
       id="about-us"
-      className="w-full flex justify-center items-center py-10"
+      className="w-full flex justify-center items-center py-6 md:py-10 px-4 md:px-0"
     >
-      <div className="relative w-[80%] h-[570px] rounded-xl overflow-hidden shadow-lg">
+      <div className="relative w-full md:w-[90%] lg:w-[80%] h-[250px] sm:h-[350px] md:h-[450px] lg:h-[570px] rounded-xl overflow-hidden shadow-lg">
         <AnimatePresence mode="wait">
           <motion.img
             key={images[index]}
